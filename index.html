@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Death by AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #1e1a3a, #0f0c24);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .game-card {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 24px 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+        #musicBtn {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: #2a235a;
+            border: none;
+            color: white;
+            font-size: 22px;
+            width: 44px;
+            height: 44px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .screen { display: none; }
+        .active-screen { display: block; }
+        .main-menu { text-align: center; padding: 20px 10px; }
+        h1 {
+            font-size: 44px;
+            color: white;
+            text-shadow: 0 4px 12px #00000055;
+            margin-bottom: 8px;
+        }
+        .sub { color: #cbcbff; margin-bottom: 48px; }
+        .start-btn {
+            background: linear-gradient(95deg, #a855f7, #6b21a5);
+            border: none;
+            padding: 14px 28px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 60px;
+            width: 80%;
+            color: white;
+            cursor: pointer;
+        }
+        .score-panel {
+            display: flex;
+            justify-content: space-between;
+            background: #0a0722aa;
+            padding: 12px 20px;
+            border-radius: 60px;
+            margin-bottom: 24px;
+            color: white;
+            font-weight: bold;
+        }
+        .scenario-box {
+            background: white;
+            border-radius: 36px;
+            padding: 24px 20px;
+            margin: 20px 0;
+        }
+        .scenario-text {
+            font-size: 18px;
+            line-height: 1.4;
+            color: #0e0c2a;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 60px;
+            border: 2px solid #8b5cf6;
+            margin: 15px 0 10px;
+            font-size: 16px;
+        }
+        button.submit {
+            background: #10b981;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+        }
+        .thinking {
+            text-align: center;
+            color: #ccccee;
+            margin: 16px;
+            display: none;
+        }
+        .thinking.active { display: block; }
+        .result-area {
+            background: #0a0522cc;
+            border-radius: 32px;
+            padding: 16px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .result-area.show { display: block; }
+        .survive-text { color: #4ade80; font-size: 28px; font-weight: bold; }
+        .perish-text { color: #f87171; font-size: 28px; font-weight: bold; }
+        .next-btn {
+            background: #8b5cf6;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: white;
+            margin-top: 12px;
+            display: none;
+        }
+        .next-btn.show { display: block; }
+        .footer-note { text-align: center; color: #a1a1d0; font-size: 11px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="game-card">
+    <button id="musicBtn">🔇</button>
+
+    <div id="mainMenu" class="screen active-screen">
+        <div class="main-menu">
+            <h1>⚰️ DEATH BY AI</h1>
+            <div class="sub">Can you outsmart the judge?</div>
+            <button class="start-btn" id="startGameBtn">▶ START GAME</button>
+            <div class="footer-note">v2.0 · sarcastic AI</div>
+        </div>
+    </div>
+
+    <div id="gameScreen" class="screen">
+        <div class="score-panel">
+            <span>💀 <span id="surviveCount">0</span></span>
+            <span>🎮 <span id="gameCount">0</span></span>
+            <span>🏆 <span id="highScoreSpan">0</span></span>
+        </div>
+        <div class="scenario-box">
+            <div class="scenario-text" id="scenarioText">Loading...</div>
+            <input type="text" id="playerAnswer" placeholder="✍️ Type your plan..." maxlength="200">
+            <button class="submit" id="submitBtn">⚡ SUBMIT</button>
+        </div>
+        <div id="thinkingMsg" class="thinking">🤖 Judging your fate...</div>
+        <div id="resultArea" class="result-area">
+            <div id="resultTitle"></div>
+            <div id="resultComment"></div>
+        </div>
+        <button id="nextRoundBtn" class="next-btn">➡ NEXT SCENARIO</button>
+    </div>
+</div>
+
+<script>
+    const scenarios = [
+        "🐯 Lion in the room. Only weapon: a squeaky hammer. What do you do?",
+        "📱 Phone dead in Uber at 2am. Driver lost, no common language.",
+        "💼 Reply-all complaint about boss. He's standing behind you.",
+        "🎥 Naked on video call. Camera was on. Everyone saw.",
+        "💔 Liked ex's 2016 photo while stalking at 3am. They saw it.",
+        "🍕 Wrong food delivery. Starving. Restaurant not answering.",
+        "🍰 Forgot dessert at dinner. Empty hands at the door.",
+        "🚪 Roommate walks in during private moment. Silence.",
+        "✈️ Passport thrown in trash. Flight in 5 hours. Garbage gone.",
+        "🚂 Wrong train, won't stop for 4 hours. Destination unknown.",
+        "🏠 Airbnb doesn’t exist at 2am. Empty lot. No hotels.",
+        "🛂 Passport expired. Flight in 45 min. At airport security.",
+        "🥾 Lost on mountain trail. No signal. Sun setting.",
+        "🏨 Screaming from hotel next door. No staff around.",
+        "🕊️ Seagull stole sandwich, mocking you from 3 feet.",
+        "🎤 Friend about to sing terribly, asks your opinion.",
+        "💑 Date looks 10y older than profile pic. First words?",
+        "🤐 Friend's secret. Their partner asks you directly.",
+        "💍 Called current partner by ex's name. During argument.",
+        "👀 See ex with new partner while you're alone at restaurant.",
+        "💬 'Why did your last relationship end?' on first date.",
+        "🍝 Friend's cooking is awful. 'How is it?' with hope.",
+        "🍱 Ate colleague's grandma-recipe lunch. They're crying.",
+        "🪔 Grumpy genie offers terrible wishes. What's your first wish?",
+        "📦 Smart speaker ordered 100 pizzas. Delivery guy at door."
+    ];
+
+    const surviveMessages = [
+        "✅ SURVIVED! The AI is mildly impressed.",
+        "✅ SURVIVED! Your ancestors are proud (and confused).",
+        "✅ SURVIVED! Death takes a rain check.",
+        "✅ SURVIVED! Luck? Skill? Both? Not sure.",
+        "✅ SURVIVED! Quick thinking saved you!"
+    ];
+    const perishMessages = [
+        "💀 PERISHED. Creative but not practical.",
+        "💀 PERISHED. At least your last words were funny.",
+        "💀 PERISHED. The afterlife says: 'Think faster next time.'",
+        "💀 PERISHED. Death always wins — spoiler!",
+        "💀 PERISHED. Evolution thanks you for the sacrifice."
+    ];
+
+    const surviveKeywords = ["run","hide","help","call","escape","fight","trick","clever","smart","plan","quick","think","strategy","avoid","dodge","distract","bribe","negotiate","creative","genius","brilliant","outsmart","use","grab","jump","climb","sneak","defend","attack","trap","patience","prepare","tool","weapon","item"];
+    const perishKeywords = ["cry","panic","freeze","die","scream","give up","pray","scared","afraid","fear","hopeless","useless","can't","no idea","don't know","not sure","maybe","whatever","nothing","stay","wait","hesitate","confused","lost","unsure","stupid","dumb","idiot","fool","silly","crazy","kill","murder","death","dead","quit","surrender","give in","okay","fine"];
+
+    let surviveStreak = 0, totalGames = 0;
+    let highScore = localStorage.getItem('deathAI_hs') ? parseInt(localStorage.getItem('deathAI_hs')) : 0;
+    document.getElementById('highScoreSpan').innerText = highScore;
+
+    function updateUI() {
+        document.getElementById('surviveCount').innerText = surviveStreak;
+        document.getElementById('gameCount').innerText = totalGames;
+        document.getElementById('highScoreSpan').innerText = highScore;
+    }
+
+    function getRandomScenario() { return scenarios[Math.floor(Math.random() * scenarios.length)]; }
+
+    function loadScenario() {
+        document.getElementById('scenarioText').innerText = getRandomScenario();
+        document.getElementById('playerAnswer').value = '';
+        document.getElementById('playerAnswer').disabled = false;
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('resultArea').classList.remove('show');
+        document.getElementById('nextRoundBtn').classList.remove('show');
+    }
+
+    function judge(answer) {
+        let surviveScore = 0, perishScore = 0;
+        const low = answer.toLowerCase();
+        surviveKeywords.forEach(k => { if(low.includes(k)) surviveScore += 2; });
+        perishKeywords.forEach(k => { if(low.includes(k)) perishScore += 2; });
+        if(answer.length > 55) surviveScore += 2;
+        if(answer.length < 7) perishScore += 1;
+        const creative = ['what if','maybe','perhaps','could','would','alternatively'];
+        creative.forEach(c => { if(low.includes(c)) surviveScore += 2; });
+        const panic = ['!','?','help','ahh','omg','god'];
+        panic.forEach(p => { if(low.includes(p)) perishScore += 1; });
+        let survived = (surviveScore - perishScore) > 2 ? true : ((perishScore - surviveScore) > 2 ? false : Math.random() > 0.5);
+        let msgArray = survived ? surviveMessages : perishMessages;
+        let comment = msgArray[Math.floor(Math.random() * msgArray.length)];
+        return { survived, comment };
+    }
+
+    function submitAnswer() {
+        const answer = document.getElementById('playerAnswer').value.trim();
+        if(!answer) { alert("✍️ Write something!"); return; }
+        document.getElementById('playerAnswer').disabled = true;
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('thinkingMsg').classList.add('active');
+        setTimeout(() => {
+            document.getElementById('thinkingMsg').classList.remove('active');
+            const result = judge(answer);
+            totalGames++;
+            if(result.survived) {
+                surviveStreak++;
+                if(surviveStreak > highScore) {
+                    highScore = surviveStreak;
+                    localStorage.setItem('deathAI_hs', highScore);
+                }
+            } else { surviveStreak = 0; }
+            updateUI();
+            const titleDiv = document.getElementById('resultTitle');
+            if(result.survived) {
+                titleDiv.className = 'survive-text';
+                titleDiv.innerText = '✨ SURVIVED ✨';
+            } else {
+                titleDiv.className = 'perish-text';
+                titleDiv.innerText = '💀 PERISHED 💀';
+            }
+            document.getElementById('resultComment').innerText = result.comment;
+            document.getElementById('resultArea').classList.add('show');
+            document.getElementById('nextRoundBtn').classList.add('show');
+        }, 1200);
+    }
+
+    function startGame() {
+        document.getElementById('mainMenu').classList.remove('active-screen');
+        document.getElementById('gameScreen').classList.add('active-screen');
+        surviveStreak = 0; totalGames = 0;
+        updateUI();
+        loadScenario();
+    }
+
+    let audioCtx = null, musicActive = false, musicOscs = [];
+    function initMusic() {
+        if(audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const master = audioCtx.createGain();
+            master.gain.value = 0.15;
+            master.connect(audioCtx.destination);
+            [220, 329, 440].forEach((f, i) => {
+                let osc = audioCtx.createOscillator();
+                osc.type = i===1 ? 'triangle' : 'sine';
+                osc.frequency.value = f;
+                let gainNode = audioCtx.createGain();
+                gainNode.gain.value = 0.12;
+                osc.connect(gainNode);
+                gainNode.connect(master);
+                musicOscs.push(osc);
+            });
+        } catch(e) {}
+    }
+    function toggleMusic() {
+        const btn = document.getElementById('musicBtn');
+        if(!audioCtx) initMusic();
+        if(!audioCtx) return;
+        if(audioCtx.state === 'suspended' || !musicActive) {
+            audioCtx.resume().then(() => {
+                musicOscs.forEach(osc => { try { osc.start(); } catch(e) {} });
+                musicActive = true;
+                btn.innerText = '🔊';
+                btn.style.background = '#5b21b6';
+            });
+        } else {
+            audioCtx.suspend();
+            musicActive = false;
+            btn.innerText = '🔇';
+            btn.style.background = '#2a235a';
+        }
+    }
+    document.addEventListener('touchstart', () => { if(!audioCtx) initMusic(); }, { once: true });
+    document.getElementById('musicBtn').onclick = toggleMusic;
+    document.getElementById('startGameBtn').onclick = startGame;
+    document.getElementById('submitBtn').onclick = submitAnswer;
+    document.getElementById('nextRoundBtn').onclick = () => { loadScenario(); };
+</script>
+</body>
+</html>
