@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Death by AI - 3D Words</title>
+    <title>Death by AI – Animated Icon</title>
     <style>
         * {
             margin: 0;
@@ -11,8 +11,7 @@
             box-sizing: border-box;
             font-family: system-ui, 'Segoe UI', sans-serif;
         }
-        
-        /* 3D Animated Background */
+
         body {
             min-height: 100vh;
             background: linear-gradient(145deg, #0a0a1a, #0f0c24);
@@ -23,8 +22,8 @@
             align-items: center;
             padding: 16px;
         }
-        
-        /* Floating words background */
+
+        /* Floating words background – subtle */
         .word-cloud {
             position: fixed;
             top: 0;
@@ -35,30 +34,29 @@
             pointer-events: none;
             overflow: hidden;
         }
-        
+
         .floating-word {
             position: absolute;
-            font-size: clamp(20px, 5vw, 60px);
+            font-size: clamp(20px, 5vw, 50px);
             font-weight: bold;
-            opacity: 0.08;
+            opacity: 0.03;
             animation: floatWord linear infinite;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            text-shadow: 0 0 8px rgba(255,255,255,0.2);
             white-space: nowrap;
-            transform-style: preserve-3d;
         }
-        
+
         @keyframes floatWord {
             0% {
-                transform: translateX(-20%) translateY(100vh) rotate(0deg);
-                opacity: 0.05;
+                transform: translateX(-10%) translateY(100vh) rotate(0deg);
+                opacity: 0.02;
             }
             100% {
-                transform: translateX(120%) translateY(-20vh) rotate(360deg);
-                opacity: 0.15;
+                transform: translateX(110%) translateY(-20vh) rotate(360deg);
+                opacity: 0.06;
             }
         }
-        
-        /* Game card - elevated above background */
+
+        /* Game card */
         .game-card {
             position: relative;
             z-index: 10;
@@ -71,54 +69,55 @@
             box-shadow: 0 20px 35px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
         }
-        
-        /* Music Controls */
-        .controls-bar {
-            position: absolute;
-            top: 16px;
-            right: 70px;
+
+        /* Music controls – bottom-left, discreet */
+        .music-controls {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
             padding: 6px 12px;
             border-radius: 40px;
-            backdrop-filter: blur(4px);
             z-index: 20;
+            font-size: 12px;
         }
-        
         .volume-slider {
-            width: 80px;
-            height: 4px;
+            width: 70px;
+            height: 3px;
             -webkit-appearance: none;
             background: rgba(255,255,255,0.3);
             border-radius: 2px;
             outline: none;
         }
-        
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: white;
             cursor: pointer;
         }
-        
         #musicBtn {
             background: #2a235a;
             border: none;
             color: white;
-            font-size: 18px;
-            width: 36px;
-            height: 36px;
+            font-size: 14px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .screen { display: none; }
         .active-screen { display: block; }
-        
+
         .main-menu { text-align: center; padding: 20px 10px; }
         h1 {
             font-size: 48px;
@@ -142,7 +141,7 @@
             box-shadow: 0 0 15px rgba(168,85,247,0.3);
         }
         .start-btn:active { transform: scale(0.97); }
-        
+
         .score-panel {
             display: flex;
             justify-content: space-between;
@@ -154,22 +153,51 @@
             font-weight: bold;
             backdrop-filter: blur(4px);
         }
-        
+
         .scenario-box {
             background: rgba(255,255,255,0.95);
             border-radius: 36px;
             padding: 24px 20px;
             margin: 20px 0;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
         }
-        
+
+        /* Animated icon */
+        .scenario-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(168,85,247,0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .icon-skull {
+            font-size: 42px;
+            filter: drop-shadow(0 0 5px currentColor);
+            animation: pulse 2s infinite;
+            color: #a855f7;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; text-shadow: 0 0 0 currentColor; }
+            50% { transform: scale(1.08); opacity: 1; text-shadow: 0 0 10px currentColor; }
+            100% { transform: scale(1); opacity: 0.7; text-shadow: 0 0 0 currentColor; }
+        }
+        .icon-win { color: #4ade80; }
+        .icon-lose { color: #f87171; }
+        .icon-epic { color: #fbbf24; animation: pulse 0.8s infinite; }
+
         .scenario-text {
             font-size: 18px;
             line-height: 1.4;
             color: #0e0c2a;
             font-weight: 500;
+            text-align: center;
         }
-        
+
         input {
             width: 100%;
             padding: 14px 20px;
@@ -179,7 +207,7 @@
             font-size: 16px;
             background: white;
         }
-        
+
         button.submit {
             background: #10b981;
             border: none;
@@ -190,10 +218,9 @@
             color: white;
             font-size: 18px;
             cursor: pointer;
-            transition: transform 0.1s;
         }
         button.submit:active { transform: scale(0.97); }
-        
+
         .thinking {
             text-align: center;
             color: #ccccee;
@@ -201,7 +228,7 @@
             display: none;
         }
         .thinking.active { display: block; }
-        
+
         .result-area {
             background: rgba(0,0,0,0.6);
             border-radius: 32px;
@@ -226,7 +253,7 @@
             color: #ffd966;
             display: inline-block;
         }
-        
+
         .next-btn {
             background: #8b5cf6;
             border: none;
@@ -254,7 +281,7 @@
         }
         .share-btn.show { display: block; }
         .footer-note { text-align: center; color: #a1a1d0; font-size: 11px; margin-top: 20px; }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -262,22 +289,16 @@
     </style>
 </head>
 <body>
-    <!-- 3D Floating Words Background -->
+    <!-- 3D Floating Words Background (subtle) -->
     <div class="word-cloud" id="wordCloud"></div>
 
     <div class="game-card">
-        <div class="controls-bar">
-            <span class="volume-icon">🔊</span>
-            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="15">
-            <button id="musicBtn">🔇</button>
-        </div>
-
         <div id="mainMenu" class="screen active-screen">
             <div class="main-menu">
                 <h1>⚰️ DEATH BY AI</h1>
                 <div class="sub">The AI judge will decide your fate...</div>
                 <button class="start-btn" id="startGameBtn">▶ START GAME</button>
-                <div class="footer-note">v8.0 · 3D words · quality scoring · epic wins</div>
+                <div class="footer-note">v8.2 · animated icon · quality scoring</div>
             </div>
         </div>
 
@@ -288,6 +309,9 @@
                 <span>🏆 BEST: <span id="highScoreSpan">0</span></span>
             </div>
             <div class="scenario-box">
+                <div class="scenario-icon">
+                    <div class="icon-skull" id="scenarioIcon">💀</div>
+                </div>
                 <div class="scenario-text" id="scenarioText">Loading...</div>
                 <input type="text" id="playerAnswer" placeholder="✍️ What's your move?" maxlength="200">
                 <button class="submit" id="submitBtn">⚡ FACE JUDGEMENT</button>
@@ -303,51 +327,47 @@
         </div>
     </div>
 
+    <!-- Music controls -->
+    <div class="music-controls">
+        <span class="volume-icon">🔊</span>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="15">
+        <button id="musicBtn">🔇</button>
+    </div>
+
     <script>
         // ==================== 3D FLOATING WORDS BACKGROUND ====================
         const wordsList = [
-            "SURVIVE", "PERISH", "EPIC", "DEATH", "AI", "STREAK", "POINTS", "FATE", 
+            "SURVIVE", "PERISH", "EPIC", "DEATH", "AI", "STREAK", "POINTS", "FATE",
             "JUDGE", "LIVE", "DIE", "CHANCE", "RISK", "FORTUNE", "DESTINY", "LEGEND",
             "VICTORY", "DEFEAT", "GLORY", "HONOR", "CHAOS", "ORDER", "FINAL", "CHOICE"
         ];
-        
+
         function createFloatingWords() {
             const cloud = document.getElementById('wordCloud');
-            const wordCount = 35;
-            
+            const wordCount = 20;
             for (let i = 0; i < wordCount; i++) {
                 const word = wordsList[Math.floor(Math.random() * wordsList.length)];
                 const span = document.createElement('div');
                 span.className = 'floating-word';
                 span.textContent = word;
-                
-                // Random properties
-                const size = Math.random() * 40 + 20; // 20px to 60px
+                const size = Math.random() * 30 + 18;
                 const left = Math.random() * 100;
-                const duration = Math.random() * 15 + 10; // 10-25 seconds
-                const delay = Math.random() * -30; // negative for staggered start
-                const opacity = Math.random() * 0.08 + 0.03;
-                const rotateStart = Math.random() * 360;
-                
+                const duration = Math.random() * 25 + 15;
+                const delay = Math.random() * -40;
                 span.style.fontSize = size + 'px';
                 span.style.left = left + '%';
                 span.style.animationDuration = duration + 's';
                 span.style.animationDelay = delay + 's';
-                span.style.opacity = opacity;
-                span.style.transform = `rotate(${rotateStart}deg)`;
-                
-                // Random colors for 3D effect
+                span.style.opacity = Math.random() * 0.03 + 0.02;
                 const colors = ['#a855f7', '#4ade80', '#f87171', '#fbbf24', '#60a5fa', '#c084fc'];
                 span.style.color = colors[Math.floor(Math.random() * colors.length)];
-                span.style.textShadow = `0 0 15px ${span.style.color}`;
-                
+                span.style.textShadow = `0 0 8px ${span.style.color}`;
                 cloud.appendChild(span);
             }
         }
-        
         createFloatingWords();
 
-        // ==================== GAME CODE ====================
+        // ==================== GAME LOGIC ====================
         const scenarios = [
             "🐯 A hungry lion in the room. Only weapon: a squeaky hammer.",
             "📱 Phone dead at 2am in an Uber. Driver is lost and speaks no English.",
@@ -430,6 +450,10 @@
             document.getElementById('resultArea').classList.remove('show');
             document.getElementById('nextRoundBtn').classList.remove('show');
             document.getElementById('shareBtn').classList.remove('show');
+            // Reset icon to neutral purple
+            const icon = document.getElementById('scenarioIcon');
+            icon.className = 'icon-skull';
+            icon.style.color = '#a855f7';
         }
 
         function isRandomGarbage(answer) {
@@ -460,7 +484,7 @@
             if (isRandomGarbage(answer)) {
                 return { survived: false, comment: "🧠 The AI detected random nonsense. Put some thought into it next time! 🧠", qualityScore: 0, pointsEarned: 0 };
             }
-            
+
             let surviveScore = 0, perishScore = 0;
             const low = answer.toLowerCase();
             surviveKeywords.forEach(k => { if(low.includes(k)) surviveScore += 2; });
@@ -472,31 +496,31 @@
             creativeBonus.forEach(c => { if(low.includes(c)) surviveScore += 2; });
             const panicWords = ['!','?','help','ahh','oh no','omg','god','no way','what','huh'];
             panicWords.forEach(p => { if(low.includes(p)) perishScore += 1; });
-            
+
             let survived;
             let pointMultiplier = 1;
             if (surviveScore > perishScore + 4) { survived = true; pointMultiplier = 2; }
             else if (perishScore > surviveScore + 4) { survived = false; pointMultiplier = 0.5; }
             else { survived = Math.random() > 0.45; pointMultiplier = survived ? 1.2 : 0.8; }
-            
+
             let pointsEarned = Math.floor((qualityScore + surviveScore) * pointMultiplier);
             pointsEarned = Math.min(pointsEarned, 25);
-            
+
             let comment;
             if (qualityScore > 35 && survived) { comment = epicWinResponses[Math.floor(Math.random() * epicWinResponses.length)]; }
             else if (survived) { comment = winResponses[Math.floor(Math.random() * winResponses.length)]; }
             else { comment = loseResponses[Math.floor(Math.random() * loseResponses.length)]; }
-            
+
             if (qualityScore > 30) comment += " ⭐ Exceptional strategy!";
             else if (qualityScore > 15) comment += " 💡 Good thinking!";
             else if (qualityScore < 5 && survived) comment += " 🤔 You got lucky this time!";
-            
+
             return { survived, comment, qualityScore, pointsEarned };
         }
 
         function shareResult() {
             const gameUrl = "https://smuhammadsaim555-prog.github.io/deathbyai/";
-            const resultText = lastResult.survived ? 
+            const resultText = lastResult.survived ?
                 `🎉 I SURVIVED in Death by AI! Score: ${lastResult.qualityScore} pts | Streak: ${surviveStreak}\n\nCan you beat me? ${gameUrl}` :
                 `💀 I PERISHED in Death by AI... Score: ${lastResult.qualityScore} pts\n\nTry to survive: ${gameUrl}`;
             if (navigator.share) {
@@ -518,6 +542,21 @@
                 if(result.survived) { surviveStreak += result.pointsEarned > 0 ? result.pointsEarned : 1; if(surviveStreak > highScore) { highScore = surviveStreak; localStorage.setItem('deathAI_hs', highScore); } }
                 else { surviveStreak = Math.max(0, surviveStreak - 2); }
                 updateUI();
+
+                // Update animated icon based on result
+                const icon = document.getElementById('scenarioIcon');
+                icon.className = 'icon-skull';
+                if(result.qualityScore > 35 && result.survived) {
+                    icon.classList.add('icon-epic');
+                    icon.style.color = '#fbbf24';
+                } else if(result.survived) {
+                    icon.classList.add('icon-win');
+                    icon.style.color = '#4ade80';
+                } else {
+                    icon.classList.add('icon-lose');
+                    icon.style.color = '#f87171';
+                }
+
                 const titleDiv = document.getElementById('resultTitle');
                 if(result.qualityScore > 35 && result.survived) { titleDiv.className = 'epic-win'; titleDiv.innerText = '🏆 EPIC VICTORY! 🏆'; }
                 else if(result.survived) { titleDiv.className = 'win-text'; titleDiv.innerText = '✨ VICTORY! ✨'; }
@@ -538,10 +577,10 @@
             loadScenario();
         }
 
-        // ==================== MUSIC WITH VOLUME CONTROL ====================
+        // ==================== MUSIC ====================
         let audioCtx = null, musicActive = false, musicOscs = [];
         let masterGain = null;
-        
+
         function initMusic() {
             if(audioCtx) return;
             try {
@@ -566,7 +605,7 @@
                 });
             } catch(e) {}
         }
-        
+
         function toggleMusic() {
             const btn = document.getElementById('musicBtn');
             if(!audioCtx) initMusic();
@@ -586,7 +625,7 @@
                 btn.style.background = '#2a235a';
             }
         }
-        
+
         document.addEventListener('touchstart', () => { if(!audioCtx) initMusic(); }, { once: true });
         document.getElementById('musicBtn').onclick = toggleMusic;
         document.getElementById('startGameBtn').onclick = startGame;
