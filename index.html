@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Death by AI – Visual Edition</title>
+    <title>Death by AI – Animated Scenes</title>
     <style>
         * {
             margin: 0;
@@ -48,7 +48,6 @@
             100% { transform: translateX(110%) translateY(-20vh) rotate(360deg); opacity: 0.12; }
         }
 
-        /* Game card – bigger */
         .game-card {
             position: relative;
             z-index: 10;
@@ -62,32 +61,32 @@
             border: 1px solid rgba(255,255,255,0.25);
         }
 
-        /* Volume controls – top right */
-        .music-controls {
+        /* Volume control – top-right corner, outside card */
+        .volume-dock {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
+            top: 24px;
+            right: 24px;
+            z-index: 200;
             background: rgba(0,0,0,0.55);
             backdrop-filter: blur(8px);
-            padding: 8px 18px;
+            padding: 8px 20px;
             border-radius: 60px;
-            z-index: 100;
             border: 1px solid rgba(255,255,255,0.25);
+            display: flex;
+            gap: 14px;
+            align-items: center;
         }
         .volume-slider {
-            width: 110px;
+            width: 130px;
             height: 5px;
             -webkit-appearance: none;
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.4);
             border-radius: 5px;
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: white;
             cursor: pointer;
@@ -102,14 +101,16 @@
             height: 34px;
             border-radius: 50%;
             cursor: pointer;
+            transition: 0.2s;
         }
         #musicBtn.music-playing {
             background: #8b5cf6;
-            animation: pulseGlow 1.2s infinite;
+            box-shadow: 0 0 12px #a855f7;
+            animation: pulse 1.2s infinite;
         }
-        @keyframes pulseGlow {
+        @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); }
-            70% { box-shadow: 0 0 0 8px rgba(139,92,246,0); }
+            70% { box-shadow: 0 0 0 10px rgba(139,92,246,0); }
             100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
         }
 
@@ -157,38 +158,42 @@
             text-align: center;
         }
 
-        /* Visual Zone: Scenario Image + Player Avatar */
+        /* Animated icons container */
         .visual-zone {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 28px;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            justify-content: center;
         }
-        .scene-image {
+        .animated-icon {
             width: 110px;
             height: 110px;
-            background: #1e1a3a;
-            border-radius: 28px;
+            background: linear-gradient(145deg, #1e1a3a, #0f0c24);
+            border-radius: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 64px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.2);
-            transition: 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            animation: floatIcon 2.5s infinite ease;
         }
-        .player-avatar {
-            width: 90px;
-            height: 90px;
-            background: #2a235a;
+        @keyframes floatIcon {
+            0%,100% { transform: translateY(0px); filter: drop-shadow(0 0 3px rgba(168,85,247,0.3)); }
+            50% { transform: translateY(-6px); filter: drop-shadow(0 0 12px rgba(168,85,247,0.6)); }
+        }
+        .player-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #2a235a, #1a1740);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            box-shadow: 0 0 0 3px rgba(168,85,247,0.5);
+            font-size: 58px;
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.6);
             animation: idleBob 2s infinite;
         }
         @keyframes idleBob {
@@ -196,12 +201,13 @@
             50% { transform: translateY(-5px); }
         }
         .vs-badge {
-            font-size: 20px;
+            font-size: 28px;
             font-weight: bold;
             color: #a855f7;
             background: rgba(0,0,0,0.4);
-            padding: 6px 12px;
-            border-radius: 40px;
+            padding: 8px 16px;
+            border-radius: 60px;
+            text-shadow: 0 0 5px currentColor;
         }
 
         .scenario-text {
@@ -276,13 +282,21 @@
 </head>
 <body>
     <div class="word-cloud" id="wordCloud"></div>
+
+    <!-- Volume controls - top-right, clean -->
+    <div class="volume-dock">
+        <span class="volume-icon">🎵</span>
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="48">
+        <button id="musicBtn">🔇</button>
+    </div>
+
     <div class="game-card">
         <div id="mainMenu" class="screen active-screen">
             <div class="main-menu">
                 <h1>⚰️ DEATH BY AI</h1>
                 <div class="sub">The AI judge will decide your fate...</div>
                 <button class="start-btn" id="startGameBtn">▶ START GAME</button>
-                <div class="footer-note">v10 · visual scenario · player avatar</div>
+                <div class="footer-note">v13 · animated icons · epic visuals</div>
             </div>
         </div>
         <div id="gameScreen" class="screen">
@@ -293,9 +307,9 @@
             </div>
             <div class="scenario-box">
                 <div class="visual-zone">
-                    <div class="scene-image" id="sceneImage">❓</div>
+                    <div class="animated-icon" id="sceneIcon">❓</div>
                     <div class="vs-badge">VS</div>
-                    <div class="player-avatar" id="playerAvatar">❓</div>
+                    <div class="player-icon" id="playerIcon">❓</div>
                 </div>
                 <div class="scenario-text" id="scenarioText">Loading...</div>
                 <input type="text" id="playerAnswer" placeholder="✍️ What's your move?" maxlength="200">
@@ -312,27 +326,21 @@
         </div>
     </div>
 
-    <div class="music-controls">
-        <span class="volume-icon">🎵</span>
-        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="18">
-        <button id="musicBtn">🔇</button>
-    </div>
-
     <script>
-        // Floating words background
+        // Floating background words
         const wordsList = ["SURVIVE","PERISH","EPIC","DEATH","AI","STREAK","POINTS","FATE","JUDGE","LIVE","DIE","CHANCE","RISK","FORTUNE","DESTINY","LEGEND","VICTORY","DEFEAT"];
         function createFloatingWords() {
             const cloud = document.getElementById('wordCloud');
-            for(let i=0;i<28;i++) {
+            for(let i=0;i<32;i++) {
                 const word = wordsList[Math.floor(Math.random()*wordsList.length)];
                 const span = document.createElement('div');
                 span.className = 'floating-word';
                 span.textContent = word;
-                span.style.fontSize = (Math.random()*36+22)+'px';
+                span.style.fontSize = (Math.random()*38+24)+'px';
                 span.style.left = Math.random()*100+'%';
-                span.style.animationDuration = (Math.random()*28+16)+'s';
-                span.style.animationDelay = (Math.random()*-45)+'s';
-                span.style.opacity = Math.random()*0.07+0.04;
+                span.style.animationDuration = (Math.random()*30+18)+'s';
+                span.style.animationDelay = (Math.random()*-50)+'s';
+                span.style.opacity = Math.random()*0.08+0.04;
                 const colors = ['#a855f7','#4ade80','#f87171','#fbbf24','#60a5fa'];
                 span.style.color = colors[Math.floor(Math.random()*colors.length)];
                 cloud.appendChild(span);
@@ -340,57 +348,57 @@
         }
         createFloatingWords();
 
-        // === SCENARIO VISUAL MAPPER (emoji-based image)
-        function getScenarioVisual(text) {
+        // === Animated icon mapper (rich graphical emoji) ===
+        function getSceneIcon(text) {
             const t = text.toLowerCase();
-            if(t.includes('lion')) return '🦁';
-            if(t.includes('phone') || t.includes('uber')) return '📱';
-            if(t.includes('email') || t.includes('boss')) return '💼';
-            if(t.includes('video call') || t.includes('naked')) return '🎥';
-            if(t.includes('ex') || t.includes('photo')) return '💔';
-            if(t.includes('food') || t.includes('delivery')) return '🍕';
-            if(t.includes('dessert')) return '🍰';
-            if(t.includes('roommate')) return '🚪';
-            if(t.includes('passport')) return '✈️';
-            if(t.includes('train')) return '🚂';
-            if(t.includes('airbnb')) return '🏠';
-            if(t.includes('hiking') || t.includes('mountain')) return '🥾';
-            if(t.includes('hotel')) return '🏨';
-            if(t.includes('seagull') || t.includes('sandwich')) return '🕊️🥪';
-            if(t.includes('sing')) return '🎤';
-            if(t.includes('date')) return '💑';
-            if(t.includes('secret')) return '🤐';
-            if(t.includes('genie')) return '🪔';
-            if(t.includes('smart speaker')) return '📦';
-            if(t.includes('dentist')) return '🦷';
-            if(t.includes('car')) return '🚗';
-            if(t.includes('ghost')) return '👻';
-            if(t.includes('lottery')) return '💸';
-            if(t.includes('snake')) return '🐍';
-            if(t.includes('tsunami')) return '🌊';
-            if(t.includes('spy')) return '🕵️';
-            if(t.includes('award')) return '🏆';
-            if(t.includes('robot')) return '🤖';
-            if(t.includes('cake')) return '🎂';
-            if(t.includes('artifact')) return '💀';
-            if(t.includes('helicopter')) return '🚁';
-            if(t.includes('stage')) return '🎭';
-            if(t.includes('desert')) return '🌵';
-            if(t.includes('penguin')) return '🐧';
-            if(t.includes('magician')) return '🪄';
-            if(t.includes('christmas')) return '🎄';
-            if(t.includes('tv')) return '📺';
-            if(t.includes('burger')) return '🍔';
-            if(t.includes('bee')) return '🐝';
-            if(t.includes('concert')) return '🎸';
-            if(t.includes('brain')) return '🧠';
-            if(t.includes('alien')) return '🛸';
-            if(t.includes('octopus')) return '🐙';
-            if(t.includes('death')) return '💀';
-            return '❓';
+            if(t.includes('lion')) return '🦁🐾🔥';
+            if(t.includes('phone') || t.includes('uber')) return '📱🚗💀';
+            if(t.includes('email') || t.includes('boss')) return '💼👔😱';
+            if(t.includes('video call') || t.includes('naked')) return '🎥😳🚨';
+            if(t.includes('ex') || t.includes('photo')) return '💔📸😭';
+            if(t.includes('food') || t.includes('delivery')) return '🍕📦😡';
+            if(t.includes('dessert')) return '🍰😅💥';
+            if(t.includes('roommate')) return '🚪😶👀';
+            if(t.includes('passport')) return '✈️🛂😰';
+            if(t.includes('train')) return '🚂❓🌍';
+            if(t.includes('airbnb')) return '🏠🌙😱';
+            if(t.includes('hiking') || t.includes('mountain')) return '🥾🏔️⚠️';
+            if(t.includes('hotel')) return '🏨😱🔊';
+            if(t.includes('seagull') || t.includes('sandwich')) return '🕊️🥪😤💨';
+            if(t.includes('sing')) return '🎤😬🎵';
+            if(t.includes('date')) return '💑🤥💔';
+            if(t.includes('secret')) return '🤐🗣️😨';
+            if(t.includes('genie')) return '🪔✨👑';
+            if(t.includes('smart speaker')) return '📦🔊🍕';
+            if(t.includes('dentist')) return '🦷😬🔧';
+            if(t.includes('car')) return '🚗🔋⚠️';
+            if(t.includes('ghost')) return '👻👋💫';
+            if(t.includes('lottery')) return '💸🎫💰';
+            if(t.includes('snake')) return '🐍👟😰';
+            if(t.includes('tsunami')) return '🌊😰🏃';
+            if(t.includes('spy')) return '🕵️‍♂️📜🤫';
+            if(t.includes('award')) return '🏆🎤😨';
+            if(t.includes('robot')) return '🤖🔒🧹';
+            if(t.includes('cake')) return '🎂💔😭';
+            if(t.includes('artifact')) return '💀🔮👁️';
+            if(t.includes('helicopter')) return '🚁🧭😵';
+            if(t.includes('stage')) return '🎭📖😰';
+            if(t.includes('desert')) return '🌵🥤🔥';
+            if(t.includes('penguin')) return '🐧🏠❓';
+            if(t.includes('magician')) return '🪄✨🎩';
+            if(t.includes('christmas')) return '🎄🔥😱';
+            if(t.includes('tv')) return '📺💬🤖';
+            if(t.includes('burger')) return '🍔😭🍽️';
+            if(t.includes('bee')) return '🐝😨💨';
+            if(t.includes('concert')) return '🎸🤘😬';
+            if(t.includes('brain')) return '🧠🔮🧪';
+            if(t.includes('alien')) return '🛸🌍👽';
+            if(t.includes('octopus')) return '🐙♟️🌊';
+            if(t.includes('death')) return '💀✌️⚰️';
+            return '❓🤔💭';
         }
 
-        // SCENARIOS (same 50)
+        // 50 scenarios (full list)
         const scenarios = [
             "🐯 A hungry lion in the room. Only weapon: a squeaky hammer.",
             "📱 Phone dead at 2am in an Uber. Driver is lost and speaks no English.",
@@ -444,7 +452,7 @@
             "💀 Death himself challenges you to rock-paper-scissors."
         ];
 
-        // Game logic (same as previous working version)
+        // Game logic
         const surviveKeywords = ["run","hide","help","call","escape","fight","trick","clever","smart","plan","strategy","avoid","dodge","distract","bribe","negotiate","creative","genius","brilliant","outsmart","use","grab","jump","climb","sneak","defend","attack","trap","patience","prepare","tool","weapon","item","fake","pretend","convince","reason","logic","improvise","adapt","survive","live"];
         const perishKeywords = ["cry","panic","freeze","die","scream","give up","pray","scared","afraid","fear","hopeless","useless","can't","no idea","don't know","not sure","nothing","stay","wait","hesitate","confused","lost","unsure","stupid","dumb","idiot","fool","silly","crazy","kill","murder","death","dead","quit","surrender","give in","okay","fine"];
         const winResponses = ["🎉 The AI is IMPRESSED! You survived!","✨ BRILLIANT! The universe applauds your genius.","🔥 You CHEATED DEATH!","🏆 VICTORY!","💪 RESPECT!","🧠 GENIUS MOVE!"];
@@ -464,8 +472,8 @@
         function loadScenario() {
             const text = getRandomScenario();
             document.getElementById('scenarioText').innerText = text;
-            document.getElementById('sceneImage').innerHTML = getScenarioVisual(text);
-            document.getElementById('playerAvatar').innerHTML = '❓';
+            document.getElementById('sceneIcon').innerHTML = getSceneIcon(text);
+            document.getElementById('playerIcon').innerHTML = '❓';
             document.getElementById('playerAnswer').value = '';
             document.getElementById('playerAnswer').disabled = false;
             document.getElementById('submitBtn').disabled = false;
@@ -507,7 +515,7 @@
                 if(result.survived) { surviveStreak++; if(surviveStreak>highScore) { highScore=surviveStreak; localStorage.setItem('deathAI_hs',highScore); } }
                 else surviveStreak=0;
                 updateUI();
-                document.getElementById('playerAvatar').innerHTML = result.survived ? '😎' : '😵';
+                document.getElementById('playerIcon').innerHTML = result.survived ? '😎✨' : '😵💀';
                 const titleDiv = document.getElementById('resultTitle');
                 if(result.qualityScore>25 && result.survived) { titleDiv.className='epic-win'; titleDiv.innerText='🏆 EPIC VICTORY! 🏆'; }
                 else if(result.survived) { titleDiv.className='win-text'; titleDiv.innerText='✨ VICTORY! ✨'; }
@@ -532,15 +540,15 @@
             if(navigator.share) navigator.share({title:'Death by AI',text:text,url:url}).catch(()=>prompt("Copy:",text));
             else prompt("Copy:",text);
         }
-        // music
+        // Music system (clear volume, high enough)
         let audioCtx=null, musicActive=false, musicOscs=[], masterGain=null;
         function initMusic() {
             if(audioCtx) return;
             audioCtx = new (window.AudioContext||window.webkitAudioContext)();
             masterGain = audioCtx.createGain();
-            masterGain.gain.value=0.04;
+            masterGain.gain.value = 0.12;
             masterGain.connect(audioCtx.destination);
-            [196,261,329,392,440].forEach(f=>{let o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=f; let g=audioCtx.createGain(); g.gain.value=0.025; o.connect(g); g.connect(masterGain); musicOscs.push(o);});
+            [196,261,329,392,440].forEach(f=>{let o=audioCtx.createOscillator(); o.type='sine'; o.frequency.value=f; let g=audioCtx.createGain(); g.gain.value=0.05; o.connect(g); g.connect(masterGain); musicOscs.push(o);});
             document.getElementById('volumeSlider').addEventListener('input',e=>{if(masterGain) masterGain.gain.value=e.target.value/1000;});
         }
         function toggleMusic() {
